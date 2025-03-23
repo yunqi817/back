@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+
+    <!-- 查询所有用户信息 -->
+    <select id="selectList" resultType="com.example.entity.User">
+        SELECT * FROM users
+    </select>
+
+    <!-- 根据 ID 查询用户信息 -->
+    <select id="selectById" resultType="com.example.entity.User">
+        SELECT * FROM users WHERE staff_id = #{staffId}
+    </select>
+
+    <!-- 插入用户信息 -->
+    <insert id="insertUser" parameterType="cn.hutool.json.JSONObject">
+        INSERT INTO users (
+            staff_id,
+            staff_name,
+            staff_gender,
+            staff_position,
+            staff_department,
+            staff_hiredate,
+            staff_tel,
+            staff_permission,
+            staff_pwd,
+            remark
+        )
+        VALUES (
+                   #{staffId},
+                   #{staffName},
+                   #{staffGender},
+                   #{staffPosition},
+                   #{staffDepartment},
+                   #{staffHiredate},
+                   #{staffTel},
+                   #{staffPermission},
+                   #{staffPwd},
+                   #{remark}
+               )
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="cn.hutool.json.JSONObject">
+        UPDATE users
+        SET
+            staff_name = #{staffName},
+            staff_gender = #{staffGender},
+            staff_position = #{staffPosition},
+            staff_department = #{staffDepartment},
+            staff_hiredate = #{staffHiredate},
+            staff_tel = #{staffTel},
+            staff_permission = #{staffPermission},
+            staff_pwd = #{staffPwd},
+            remark = #{remark}
+        WHERE staff_id = #{staffId}
+    </update>
+
+    <!-- 根据 ID 删除用户信息 -->
+    <delete id="removeById" parameterType="java.lang.Long">
+        DELETE FROM users WHERE staff_id = #{staffIdL}
+    </delete>
+
+    <!-- 自定义查询：根据用户名查询用户信息 -->
+    <select id="selectByStaffName" resultType="com.example.entity.User">
+        SELECT * FROM users WHERE staff_name = #{staffName}
+    </select>
+
+    <!-- 自定义查询：根据部门查询用户信息 -->
+    <select id="selectByDepartment" resultType="com.example.entity.User">
+        SELECT * FROM users WHERE staff_department = #{department}
+    </select>
+
+</mapper>

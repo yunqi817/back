@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OpreateMapper">
+    <select id="selectList" resultType="com.example.entity.Opreate">
+        SELECT * FROM opreate
+    </select>
+
+    <!-- 插入操作信息 -->
+    <insert id="insertOpreate" parameterType="com.example.entity.Opreate">
+        INSERT INTO opreate (opration, parent_Id, op_no, op_id, id)
+        VALUES (#{opration}, #{parentId}, #{opNo}, #{opId}, #{id})
+    </insert>
+
+
+    <!-- 更新用户信息 -->
+    <update id="updateOpreate" parameterType="com.example.entity.Opreate">
+        UPDATE opreate
+        SET opration = #{opration}, parent_Id = #{parentId}, op_no = #{opNo}, op_id = #{opId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="removeById" parameterType="long">
+        DELETE FROM opreate WHERE id = #{Id}
+    </delete>
+
+    <delete id="removebyparentId" parameterType="long">
+        DELETE FROM opreate WHERE parent_Id = #{parentId}
+    </delete>
+
+</mapper>

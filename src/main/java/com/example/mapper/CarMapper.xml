@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CarMapper">
+    <select id="selectList" resultType="com.example.entity.Car">
+        SELECT * FROM car
+    </select>
+
+    <insert id="saveCar" parameterType="com.example.entity.Opreate">
+        INSERT INTO car (Id, Car_Id, Car_No, Car_Num, Arr_Time, Direction, Arr_Track, Out_Track, Backup_Id, Line, Out_Time, Or_num, Mid_Person, Night_Person, Day_Person, Compiler, Car_Doperson, Plan_Time, remark2)
+        VALUES (#{id}, #{carId}, #{carNo}, #{carNum}, #{arrTime}, #{direction}, #{arrTrack}, #{outTrack}, #{backupId}, #{line}, #{outTime}, #{ornum}, #{midPerson}, #{nightPerson}, #{dayPerson}, #{compiler}, #{carDoperson}, #{planTime}, #{remark2});
+    </insert>
+
+    <update id="updateCar" parameterType="com.example.entity.Car">
+        UPDATE car
+        SET car_id = #{carId},
+            car_no = #{carNo},
+            car_num = #{carNum},
+            arr_time = #{arrTime},
+            direction = #{direction},
+            arr_track = #{arrTrack},
+            out_track = #{outTrack},
+            backup_id = #{backupId},
+            line = #{line},
+            out_time = #{outTime},
+            or_num = #{ornum},
+            mid_person = #{midPerson},
+            night_person = #{nightPerson},
+            day_person = #{dayPerson},
+            compiler = #{compiler},
+            car_doperson = #{carDoperson},
+            plan_time = #{planTime},
+            remark2 = #{remark2}
+        WHERE id = #{id}
+    </update>
+
+
+
+    <delete id="removecar" parameterType="long">
+        DELETE FROM car WHERE id = #{Id}
+    </delete>
+
+</mapper>
