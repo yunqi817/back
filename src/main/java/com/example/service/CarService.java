@@ -14,7 +14,7 @@ public interface CarService extends IService<Car> {
 
     boolean saveCarOpreate(JSONObject carOpreate);
 
-    boolean updatecar(Car car);
+    boolean updatecar(JSONObject car);
 
     boolean removecar(Long carId);
 }

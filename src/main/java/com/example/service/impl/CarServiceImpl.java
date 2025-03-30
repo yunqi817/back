@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.entity.Car;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,28 +68,42 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         return totalsList;
     }
 
+    //新增
     @Override
     public boolean saveCarOpreate(JSONObject carOpreate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Car car = new Car();
         Long set = carOpreate.getLong("id");
         car.setId(set);
         car.setCarId((String) carOpreate.get("carId"));
         car.setCarNo((String) carOpreate.get("carNo"));
         car.setCarNum((Integer) carOpreate.get("carNum"));
-        car.setArrTime((Date) carOpreate.get("arrTime"));
+        try {
+            car.setArrTime(sdf.parse((String) carOpreate.get("arrTime")));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         car.setDirection((String) carOpreate.get("direction"));
         car.setArrTrack((String) carOpreate.get("arrTrack"));
         car.setOutTrack((String) carOpreate.get("outTrack"));
         car.setBackupId((String) carOpreate.get("backupId"));
         car.setLine((String) carOpreate.get("line"));
-        car.setOutTime((Date) carOpreate.get("outTime"));
+        try {
+            car.setOutTime(sdf.parse((String) carOpreate.get("outTime")));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         car.setOrnum((Integer) carOpreate.get("ornum"));
         car.setMidPerson((String) carOpreate.get("midPerson"));
         car.setNightPerson((String) carOpreate.get("nightPerson"));
         car.setDayPerson((String) carOpreate.get("dayPerson"));
         car.setCompiler((String) carOpreate.get("compiler"));
         car.setCarDoperson((String) carOpreate.get("carDoperson"));
-        car.setPlanTime((Date) carOpreate.get("planTime"));
+        try {
+            car.setPlanTime(sdf.parse((String) carOpreate.get("planTime")));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         car.setRemark2((String) carOpreate.get("remark2"));
         List<JSONObject> opreateList = (List<JSONObject>) carOpreate.get("opreate");
         List<Opreate> opreates = new ArrayList<>();
@@ -107,9 +123,57 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         return true;
     }
 
+    //更新
     @Override
-    public boolean updatecar(Car car) {
-        return carMapper.updateCar(car);
+    public boolean updatecar(JSONObject car) {
+        Car carInfo = new Car();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date arrTime = new Date();
+        Date outTime = new Date();
+        Date planTime = new Date();
+        try {
+            arrTime = sdf.parse((String) car.get("arrTime"));
+            outTime = sdf.parse((String) car.get("outTime"));
+            planTime = sdf.parse((String) car.get("planTime"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        Long set = car.getLong("id");
+        carInfo.setId(set);
+        carInfo.setCarId((String) car.get("carId"));
+        carInfo.setCarNo((String) car.get("carNo"));
+        carInfo.setCarNum((Integer) car.get("carNum"));
+        carInfo.setArrTime(arrTime);
+        carInfo.setDirection((String) car.get("direction"));
+        carInfo.setArrTrack((String) car.get("arrTrack"));
+        carInfo.setOutTrack((String) car.get("outTrack"));
+        carInfo.setBackupId((String) car.get("backupId"));
+        carInfo.setLine((String) car.get("line"));
+        carInfo.setOutTime(outTime);
+        carInfo.setOrnum((Integer) car.get("ornum"));
+        carInfo.setMidPerson((String) car.get("midPerson"));
+        carInfo.setNightPerson((String) car.get("nightPerson"));
+        carInfo.setDayPerson((String) car.get("dayPerson"));
+        carInfo.setCompiler((String) car.get("compiler"));
+        carInfo.setCarDoperson((String) car.get("carDoperson"));
+        carInfo.setPlanTime(planTime);
+        carInfo.setRemark2((String) car.get("remark2"));
+        List<JSONObject> opreateList = (List<JSONObject>) car.get("opreate");
+        List<Opreate> opreates = new ArrayList<>();
+        carMapper.updateCar(carInfo);
+        for (JSONObject opreate : opreateList) {
+            Opreate opreate1 = new Opreate();
+            Long opSet = opreate.getLong("id");
+            opreate1.setId(opSet);
+            opreate1.setParentId(set);
+            opreate1.setOpId((Integer) opreate.get("opId"));
+            opreate1.setOpration((String) opreate.get("opration"));
+            opreate1.setOpNo((Integer) opreate.get("opNo"));
+            opreate1.setIsOk((Integer) opreate.get("isOk"));
+            opreates.add(opreate1);
+        }
+        opreateService.updateOpreate(opreates);
+        return true;
     }
 
     @Override

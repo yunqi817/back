@@ -35,7 +35,7 @@ public class CarController {
     }
 
     @PostMapping("/updateCar")
-    public boolean updateCar(@RequestBody Car car) {
+    public boolean updateCar(@RequestBody JSONObject car) {
         return carService.updatecar(car);
     }
 
