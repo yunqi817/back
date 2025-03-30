@@ -11,10 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
     private UserMapper userMapper;
 
@@ -24,7 +27,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     public List<User> getAllUsers() {
         List<User> a = new ArrayList<>();
-        return userMapper.selectList();
+        List<User> users = userMapper.selectList();
+        for (User user : users) {
+            logger.info("User: {}", user);
+            logger.info("StaffId: {}", user.getStaffId());
+            logger.info("StaffName: {}", user.getStaffName());
+        }
+        return users;
     }
 
     @Override

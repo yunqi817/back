@@ -13,6 +13,7 @@ public class Opreate {
     private Long parentId;
     private Integer opNo;
     private Long id;
+    private Integer isOk;
 
     public Integer getOpId() {
         return opId;
@@ -52,5 +53,14 @@ public class Opreate {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getIsOk() {
+        return isOk;
+    }
+
+    // 设置 isOk 的值
+    public void setIsOk(int isOk) {
+        this.isOk = isOk;
     }
 }

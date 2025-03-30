@@ -1,13 +1,18 @@
 package com.example.controller;
 
 import cn.hutool.json.JSONObject;
+import cn.hutool.log.Log;
 import com.example.entity.User;
 import com.example.service.UserService;
+import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/user")
@@ -36,6 +41,11 @@ public class UserController {
 
     @PostMapping("/update")
     public boolean updateUser(@RequestBody JSONObject user) {
+        if(user.get("staffGender").equals("男")){
+            user.set("staffGender",1);
+        } else if (user.get("staffGender").equals("女")) {
+            user.set("staffGender",2);
+        }
         Long staffId = user.getLong("staffId");
         user.set("staffId",staffId);
         user.set("staffHiredate",new Date());

@@ -60,7 +60,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
             total.put("carDoperson", car.getCarDoperson());
             total.put("planTime", car.getPlanTime());
             total.put("remark2", car.getRemark2());
-            total.put("Opreate", carOP);
+            total.put("opreate", carOP);
             totalsList.add(total);
         }
         return totalsList;
@@ -100,6 +100,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
             opreate1.setOpId((Integer) opreate.get("opId"));
             opreate1.setOpration((String) opreate.get("opration"));
             opreate1.setOpNo((Integer) opreate.get("opNo"));
+            opreate1.setIsOk((Integer) opreate.get("isOk"));
             opreates.add(opreate1);
         }
         opreateService.saveOpreate(opreates);
