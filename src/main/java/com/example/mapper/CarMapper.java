@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface CarMapper extends BaseMapper<Car> {
-    List<Car> selectList();
+    List<Car> select();
     boolean saveCar(Car car);
     boolean updateCar(Car car);
     boolean removecar(Long carId);

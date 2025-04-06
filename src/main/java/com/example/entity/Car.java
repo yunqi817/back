@@ -1,7 +1,10 @@
 package com.example.entity;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @TableName("car")
@@ -11,13 +14,13 @@ public class Car {
     private String carId;
     private String carNo;
     private Integer carNum;
-    private Date arrTime;
+    private LocalDateTime arrTime;
     private String direction;
     private String arrTrack;
     private String outTrack;
     private String backupId;
     private String line;
-    private Date outTime;
+    private LocalDateTime outTime;
     private Integer ornum;
     private String midPerson;
     private String nightPerson;
@@ -27,6 +30,7 @@ public class Car {
     private Date planTime;
     private String remark2;
 
+    // id 的 getter 和 setter 方法
     public Long getId() {
         return id;
     }
@@ -35,6 +39,7 @@ public class Car {
         this.id = id;
     }
 
+    // carId 的 getter 和 setter 方法
     public String getCarId() {
         return carId;
     }
@@ -43,6 +48,7 @@ public class Car {
         this.carId = carId;
     }
 
+    // carNo 的 getter 和 setter 方法
     public String getCarNo() {
         return carNo;
     }
@@ -51,6 +57,7 @@ public class Car {
         this.carNo = carNo;
     }
 
+    // carNum 的 getter 和 setter 方法
     public Integer getCarNum() {
         return carNum;
     }
@@ -59,14 +66,16 @@ public class Car {
         this.carNum = carNum;
     }
 
-    public Date getArrTime() {
+    // arrTime 的 getter 和 setter 方法
+    public LocalDateTime getArrTime() {
         return arrTime;
     }
 
-    public void setArrTime(Date arrTime) {
+    public void setArrTime(LocalDateTime arrTime) {
         this.arrTime = arrTime;
     }
 
+    // direction 的 getter 和 setter 方法
     public String getDirection() {
         return direction;
     }
@@ -75,6 +84,7 @@ public class Car {
         this.direction = direction;
     }
 
+    // arrTrack 的 getter 和 setter 方法
     public String getArrTrack() {
         return arrTrack;
     }
@@ -83,6 +93,7 @@ public class Car {
         this.arrTrack = arrTrack;
     }
 
+    // outTrack 的 getter 和 setter 方法
     public String getOutTrack() {
         return outTrack;
     }
@@ -91,6 +102,7 @@ public class Car {
         this.outTrack = outTrack;
     }
 
+    // backupId 的 getter 和 setter 方法
     public String getBackupId() {
         return backupId;
     }
@@ -99,6 +111,7 @@ public class Car {
         this.backupId = backupId;
     }
 
+    // line 的 getter 和 setter 方法
     public String getLine() {
         return line;
     }
@@ -107,14 +120,16 @@ public class Car {
         this.line = line;
     }
 
-    public Date getOutTime() {
+    // outTime 的 getter 和 setter 方法
+    public LocalDateTime getOutTime() {
         return outTime;
     }
 
-    public void setOutTime(Date outTime) {
+    public void setOutTime(LocalDateTime outTime) {
         this.outTime = outTime;
     }
 
+    // ornum 的 getter 和 setter 方法
     public Integer getOrnum() {
         return ornum;
     }
@@ -123,6 +138,7 @@ public class Car {
         this.ornum = ornum;
     }
 
+    // midPerson 的 getter 和 setter 方法
     public String getMidPerson() {
         return midPerson;
     }
@@ -131,6 +147,7 @@ public class Car {
         this.midPerson = midPerson;
     }
 
+    // nightPerson 的 getter 和 setter 方法
     public String getNightPerson() {
         return nightPerson;
     }
@@ -139,6 +156,7 @@ public class Car {
         this.nightPerson = nightPerson;
     }
 
+    // dayPerson 的 getter 和 setter 方法
     public String getDayPerson() {
         return dayPerson;
     }
@@ -147,6 +165,7 @@ public class Car {
         this.dayPerson = dayPerson;
     }
 
+    // compiler 的 getter 和 setter 方法
     public String getCompiler() {
         return compiler;
     }
@@ -155,6 +174,7 @@ public class Car {
         this.compiler = compiler;
     }
 
+    // carDoperson 的 getter 和 setter 方法
     public String getCarDoperson() {
         return carDoperson;
     }
@@ -163,6 +183,7 @@ public class Car {
         this.carDoperson = carDoperson;
     }
 
+    // planTime 的 getter 和 setter 方法
     public Date getPlanTime() {
         return planTime;
     }
@@ -171,6 +192,7 @@ public class Car {
         this.planTime = planTime;
     }
 
+    // remark2 的 getter 和 setter 方法
     public String getRemark2() {
         return remark2;
     }

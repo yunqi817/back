@@ -1,22 +1,29 @@
 package com.example.service.impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.entity.Opreate;
-import com.example.entity.Total;
-import com.example.entity.User;
 import com.example.mapper.CarMapper;
-import com.example.mapper.OpreateMapper;
-import com.example.mapper.UserMapper;
 import com.example.service.CarService;
 import com.example.service.OpreateService;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.entity.Car;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +41,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
      */
     @Override
     public List<JSONObject> getAllCars() {
-        List<Car> cars = carMapper.selectList(null);
+        List<Car> cars = carMapper.select();
         List<Opreate> opreates = Optional.ofNullable(opreateService.getAllOpreate()).orElse(new ArrayList<>());
         List<JSONObject> totalsList = new ArrayList<>();
         for (Car car : cars) {
@@ -71,28 +78,21 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     //新增
     @Override
     public boolean saveCarOpreate(JSONObject carOpreate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        SimpleDateFormat nianyue = new SimpleDateFormat("yyyy-MM-dd");
         Car car = new Car();
         Long set = carOpreate.getLong("id");
         car.setId(set);
         car.setCarId((String) carOpreate.get("carId"));
         car.setCarNo((String) carOpreate.get("carNo"));
         car.setCarNum((Integer) carOpreate.get("carNum"));
-        try {
-            car.setArrTime(sdf.parse((String) carOpreate.get("arrTime")));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        car.setArrTime(LocalDateTime.parse((String) carOpreate.get("arrTime"), formatter));
         car.setDirection((String) carOpreate.get("direction"));
         car.setArrTrack((String) carOpreate.get("arrTrack"));
         car.setOutTrack((String) carOpreate.get("outTrack"));
         car.setBackupId((String) carOpreate.get("backupId"));
         car.setLine((String) carOpreate.get("line"));
-        try {
-            car.setOutTime(sdf.parse((String) carOpreate.get("outTime")));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        car.setOutTime(LocalDateTime.parse((String) carOpreate.get("outTime"), formatter));
         car.setOrnum((Integer) carOpreate.get("ornum"));
         car.setMidPerson((String) carOpreate.get("midPerson"));
         car.setNightPerson((String) carOpreate.get("nightPerson"));
@@ -100,7 +100,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         car.setCompiler((String) carOpreate.get("compiler"));
         car.setCarDoperson((String) carOpreate.get("carDoperson"));
         try {
-            car.setPlanTime(sdf.parse((String) carOpreate.get("planTime")));
+            car.setPlanTime(nianyue.parse((String) carOpreate.get("planTime")));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -127,14 +127,16 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     @Override
     public boolean updatecar(JSONObject car) {
         Car carInfo = new Car();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date arrTime = new Date();
-        Date outTime = new Date();
-        Date planTime = new Date();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        LocalDateTime arrTime;
+        LocalDateTime outTime;
+        Date planTime;
         try {
-            arrTime = sdf.parse((String) car.get("arrTime"));
-            outTime = sdf.parse((String) car.get("outTime"));
-            planTime = sdf.parse((String) car.get("planTime"));
+            arrTime = LocalDateTime.parse((String) car.get("arrTime"), formatter);
+            outTime = LocalDateTime.parse((String) car.get("outTime"), formatter);
+            planTime = sdf1.parse(Optional.ofNullable((String) car.get("arrTime")).orElse(""));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -180,5 +182,70 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     public boolean removecar(Long carId) {
         opreateService.removebyparentId(carId);
         return carMapper.removecar(carId);
+    }
+
+    @Override
+    public List<JSONObject> getByCarId(String carId) {
+        List<Car> cars = carMapper.selectList(null);
+        List<Opreate> opreates = Optional.ofNullable(opreateService.getAllOpreate()).orElse(new ArrayList<>());
+        List<JSONObject> totalsList = new ArrayList<>();
+        List<Car> carList = cars.stream()
+                .filter(x -> x.getCarId().equals(carId))
+                .collect(Collectors.toList());
+        for (Car car : carList) {
+            JSONObject total = new JSONObject();
+            List<Opreate> carOP = opreates.stream()
+                    .filter(x -> x.getParentId() != null && x.getParentId().compareTo(car.getId()) == 0)
+                    .sorted(Comparator.comparing(Opreate::getOpNo))
+                    .collect(Collectors.toList());
+            total.put("id", car.getId());
+            total.put("carId", car.getCarId());
+            total.put("carNo", car.getCarNo());
+            total.put("carNum", car.getCarNum());
+            total.put("arrTime", car.getArrTime());
+            total.put("direction", car.getDirection());
+            total.put("arrTrack", car.getArrTrack());
+            total.put("outTrack", car.getOutTrack());
+            total.put("backupId", car.getBackupId());
+            total.put("line", car.getLine());
+            total.put("outTime", car.getOutTime());
+            total.put("ornum", car.getOrnum());
+            total.put("midPerson", car.getMidPerson());
+            total.put("nightPerson", car.getNightPerson());
+            total.put("dayPerson", car.getDayPerson());
+            total.put("compiler", car.getCompiler());
+            total.put("carDoperson", car.getCarDoperson());
+            total.put("planTime", car.getPlanTime());
+            total.put("remark2", car.getRemark2());
+            total.put("opreate", carOP);
+            totalsList.add(total);
+        }
+        return totalsList;
+    }
+
+    @Override
+    public boolean impoerExcel(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return false;
+        }
+        try {
+            InputStream inputStream = file.getInputStream();
+            Workbook workbook = new XSSFWorkbook(inputStream);
+            Sheet sheet = workbook.getSheetAt(0);
+//            for (Row row : sheet) {
+                 Row d = sheet.getRow(0);
+               Cell a = d.getCell(0);
+               Row b = sheet.getRow(1);
+               Cell c = b.getCell(0);
+//            }
+            System.out.println(c);
+
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return true;
     }
 }
