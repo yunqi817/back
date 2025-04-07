@@ -50,6 +50,7 @@ public class CarController {
 
     @PostMapping("/importExcel")
     public boolean importExcel(@RequestBody MultipartFile file) {
+        System.out.println("111111111");
         return carService.impoerExcel(file);
     }
 

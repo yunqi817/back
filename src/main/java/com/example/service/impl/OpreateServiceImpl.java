@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.entity.Opreate;
 import com.example.service.OpreateService;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class OpreateServiceImpl extends ServiceImpl<OpreateMapper, Opreate> impl
             System.out.println("操作不能为空");
         }
         for(Opreate opreate : opreateList){
-            return opreateMapper.insertOpreate(opreate);
+            opreateMapper.insertOpreate(opreate);
         }
         return true;
     }

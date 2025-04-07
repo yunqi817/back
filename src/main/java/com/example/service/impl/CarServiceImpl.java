@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.example.entity.Opreate;
 import com.example.mapper.CarMapper;
+import com.example.mapper.OpreateMapper;
 import com.example.service.CarService;
 import com.example.service.OpreateService;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.example.entity.Car;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -34,6 +36,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     // 添加 @Autowired 注解进行依赖注入
     @Autowired
     private OpreateService opreateService;
+
 
     /**
      * 获取所有用户信息
@@ -80,8 +83,12 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     public boolean saveCarOpreate(JSONObject carOpreate) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         SimpleDateFormat nianyue = new SimpleDateFormat("yyyy-MM-dd");
+
+        //根据现有条数加二递增序号
+        List<Car> cars = carMapper.select();
+
         Car car = new Car();
-        Long set = carOpreate.getLong("id");
+        Long set = (long) (cars.size() +1 );
         car.setId(set);
         car.setCarId((String) carOpreate.get("carId"));
         car.setCarNo((String) carOpreate.get("carNo"));
@@ -110,8 +117,6 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         carMapper.saveCar(car);
         for (JSONObject opreate : opreateList) {
             Opreate opreate1 = new Opreate();
-            Long opSet = opreate.getLong("id");
-            opreate1.setId(opSet);
             opreate1.setParentId(set);
             opreate1.setOpId((Integer) opreate.get("opId"));
             opreate1.setOpration((String) opreate.get("opration"));
@@ -178,15 +183,22 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         return true;
     }
 
+    //删除车次以及操作
     @Override
     public boolean removecar(Long carId) {
         opreateService.removebyparentId(carId);
         return carMapper.removecar(carId);
     }
 
+    //仅用于保存操作失败时删除车次信息
+    @Override
+    public boolean removebyId(Long Id) {
+        return carMapper.removecar(Id);
+    }
+
     @Override
     public List<JSONObject> getByCarId(String carId) {
-        List<Car> cars = carMapper.selectList(null);
+        List<Car> cars = carMapper.select();
         List<Opreate> opreates = Optional.ofNullable(opreateService.getAllOpreate()).orElse(new ArrayList<>());
         List<JSONObject> totalsList = new ArrayList<>();
         List<Car> carList = cars.stream()
@@ -238,7 +250,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
                Row b = sheet.getRow(1);
                Cell c = b.getCell(0);
 //            }
-            System.out.println(c);
+            System.out.println("111111111");
 
 
 
@@ -248,4 +260,6 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
 
         return true;
     }
+
+
 }
