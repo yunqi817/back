@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +26,9 @@ public class CarController {
         return carService.getByCarId(carId);
     }
 
-    @GetMapping("/list")
-    public List<JSONObject> getAllCars() {
-        return carService.getAllCars();
+    @PostMapping("/list")
+    public List<JSONObject> getAllCars(@RequestParam(required = false) String date){
+        return carService.getAllCars(date);
     }
 
 

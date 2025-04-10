@@ -6,11 +6,12 @@ import com.example.entity.Car;
 import com.example.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 
 public interface CarService extends IService<Car> {
-    List<JSONObject> getAllCars();
+    List<JSONObject> getAllCars(String date);
 
     boolean saveCarOpreate(JSONObject carOpreate);
 

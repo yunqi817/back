@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OpreateLogMapper">
+    <!-- 查询所有用户信息 -->
+    <select id="listLog" resultType="com.example.entity.OpreateLog">
+        SELECT * FROM opreate_log
+    </select>
+
+
+    <insert id="savelog" parameterType="com.example.entity.OpreateLog">
+        INSERT INTO opreate_log (opreation, plan_time, car_id, opreate_person, is_ok, opreate_time)
+        VALUES (#{opreation}, #{planTime}, #{carId}, #{opreatePerson}, #{isOk}, #{opreateTime})
+    </insert>
+
+    <!-- 根据 opreatePerson 字段查找操作日志 -->
+    <select id="searchLog" parameterType="java.lang.String" resultType="com.example.entity.OpreateLog">
+        SELECT *
+        FROM opreate_log
+        WHERE opreate_person = #{opreatePerson}
+    </select>
+
+
+    <delete id="deleteLog" parameterType="java.lang.Integer">
+        DELETE FROM opreate_log
+        WHERE id = #{id}
+    </delete>
+
+
+
+</mapper>
