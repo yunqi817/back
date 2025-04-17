@@ -105,32 +105,42 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     //新增
     @Override
     public boolean saveCarOpreate(JSONObject carOpreate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+//        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         SimpleDateFormat nianyue = new SimpleDateFormat("yyyy-MM-dd");
 
         //根据现有条数加二递增序号
         List<Car> cars = carMapper.select();
 
         Car car = new Car();
-        Long set = (long) (cars.size() +1 );
+        Long set = (long) (cars.size() +10 );
         car.setId(set);
         car.setCarId((String) carOpreate.get("carId"));
         car.setCarNo((String) carOpreate.get("carNo"));
-        car.setCarNum((Integer) carOpreate.get("carNum"));
-        car.setArrTime(LocalDateTime.parse(carOpreate.getStr("arrTime"), formatter));
+        car.setCarNum((String) carOpreate.get("carNum"));
+        car.setArrTime((String) carOpreate.get("arrTime"));
+//        if(carOpreate.get("arrTime") != null && !carOpreate.get("arrTime").equals("")){
+//        car.setArrTime(LocalDateTime.parse(carOpreate.getStr("arrTime"), formatter));
+//        }
         car.setDirection((String) carOpreate.get("direction"));
         car.setArrTrack((String) carOpreate.get("arrTrack"));
         car.setOutTrack((String) carOpreate.get("outTrack"));
         car.setBackupId((String) carOpreate.get("backupId"));
         car.setLine((String) carOpreate.get("line"));
-        car.setOutTime(LocalDateTime.parse( carOpreate.getStr("outTime"), formatter));
-        car.setOrnum((Integer) carOpreate.get("ornum"));
+        car.setOutTime((String) carOpreate.get("outTime"));
+//        if(carOpreate.get("outTime") != null && !carOpreate.get("outTime").equals("")){
+//            car.setArrTime(LocalDateTime.parse(carOpreate.getStr("outTime"), formatter));
+//        }
+        car.setOrnum((String) carOpreate.get("ornum"));
         car.setMidPerson((String) carOpreate.get("midPerson"));
         car.setNightPerson((String) carOpreate.get("nightPerson"));
         car.setDayPerson((String) carOpreate.get("dayPerson"));
         car.setCompiler((String) carOpreate.get("compiler"));
         car.setCarDoperson((String) carOpreate.get("carDoperson"));
-        car.setPlanTime(carOpreate.getDate("planTime"));
+        try {
+            car.setPlanTime(nianyue.parse(Optional.ofNullable((String) carOpreate.get("planTime")).orElse("2025-03-26")));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         car.setRemark2((String) carOpreate.get("remark2"));
         List<JSONObject> opreateList = (List<JSONObject>) carOpreate.get("opreate");
         List<Opreate> opreates = new ArrayList<>();
@@ -152,14 +162,14 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     public boolean updatecar(JSONObject car) {
         Car carInfo = new Car();
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
-        LocalDateTime arrTime;
-        LocalDateTime outTime;
+//        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+//
+//        LocalDateTime arrTime;
+//        LocalDateTime outTime;
         Date planTime;
         try {
-            arrTime = LocalDateTime.parse((String) car.get("arrTime"), formatter);
-            outTime = LocalDateTime.parse((String) car.get("outTime"), formatter);
+//            arrTime = LocalDateTime.parse((String) car.get("arrTime"), formatter);
+//            outTime = LocalDateTime.parse((String) car.get("outTime"), formatter);
             planTime = sdf1.parse(Optional.ofNullable((String) car.get("arrTime")).orElse(""));
         } catch (ParseException e) {
             throw new RuntimeException(e);
@@ -168,15 +178,15 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         carInfo.setId(set);
         carInfo.setCarId((String) car.get("carId"));
         carInfo.setCarNo((String) car.get("carNo"));
-        carInfo.setCarNum((Integer) car.get("carNum"));
-        carInfo.setArrTime(arrTime);
+        carInfo.setCarNum((String) car.get("carNum"));
+        carInfo.setArrTime((String) car.get("arrTime"));
         carInfo.setDirection((String) car.get("direction"));
         carInfo.setArrTrack((String) car.get("arrTrack"));
         carInfo.setOutTrack((String) car.get("outTrack"));
         carInfo.setBackupId((String) car.get("backupId"));
         carInfo.setLine((String) car.get("line"));
-        carInfo.setOutTime(outTime);
-        carInfo.setOrnum((Integer) car.get("ornum"));
+        carInfo.setOutTime((String) car.get("outTime"));
+        carInfo.setOrnum((String) car.get("ornum"));
         carInfo.setMidPerson((String) car.get("midPerson"));
         carInfo.setNightPerson((String) car.get("nightPerson"));
         carInfo.setDayPerson((String) car.get("dayPerson"));
@@ -298,7 +308,8 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
                                 jsonObject.put(car.get(j), "");
                         }
 
-                    }                }
+                    }
+                }
                 jsonObjectList.add(jsonObject);
             }
         } catch (IOException e) {
@@ -308,16 +319,21 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         for(JSONObject jsonObject : jsonObjectList) {
             if (jsonObject.getStr("opreate") != null) {
                 String opreate = jsonObject.getStr("opreate");
-                String[] tempList = opreate.split("，");
+                String[] tempList = opreate.split(",");
+                String[] nonEmptyList = Arrays.stream(tempList)
+                        .filter(s -> s != null && !s.isEmpty())
+                        .toArray(String[]::new);
                 List<JSONObject> opreateList = new ArrayList<>();
-                for (int i = 0; i < tempList.length; i++) {
+                for (int i = 0; i < nonEmptyList.length; i++) {
                     JSONObject jsonObject1 = new JSONObject();
                     jsonObject1.put("opNo", i);
-                    jsonObject1.put("opration", tempList[i]);
+                    jsonObject1.put("opration", nonEmptyList[i]);
                     opreateList.add(jsonObject1);
                 }
                 jsonObject.set("opreate", opreateList);
             }
+            jsonObject.put("remark2", jsonObject.getStr("midPerson"));
+            jsonObject.set("midPerson","");
             saveCarOpreate(jsonObject);
         }
         return true;

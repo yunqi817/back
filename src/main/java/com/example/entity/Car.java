@@ -7,21 +7,22 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+
 @TableName("car")
 public class Car {
     @TableId
     private Long id;
     private String carId;
     private String carNo;
-    private Integer carNum;
-    private LocalDateTime arrTime;
+    private String carNum;
+    private String arrTime;
     private String direction;
     private String arrTrack;
     private String outTrack;
     private String backupId;
     private String line;
-    private LocalDateTime outTime;
-    private Integer ornum;
+    private String outTime;
+    private String ornum;
     private String midPerson;
     private String nightPerson;
     private String dayPerson;
@@ -30,7 +31,7 @@ public class Car {
     private Date planTime;
     private String remark2;
 
-    // id 的 getter 和 setter 方法
+   // id 的 getter 和 setter 方法
     public Long getId() {
         return id;
     }
@@ -58,20 +59,20 @@ public class Car {
     }
 
     // carNum 的 getter 和 setter 方法
-    public Integer getCarNum() {
+    public String getCarNum() {
         return carNum;
     }
 
-    public void setCarNum(Integer carNum) {
+    public void setCarNum(String carNum) {
         this.carNum = carNum;
     }
 
     // arrTime 的 getter 和 setter 方法
-    public LocalDateTime getArrTime() {
+    public String getArrTime() {
         return arrTime;
     }
 
-    public void setArrTime(LocalDateTime arrTime) {
+    public void setArrTime(String arrTime) {
         this.arrTime = arrTime;
     }
 
@@ -121,20 +122,20 @@ public class Car {
     }
 
     // outTime 的 getter 和 setter 方法
-    public LocalDateTime getOutTime() {
+    public String getOutTime() {
         return outTime;
     }
 
-    public void setOutTime(LocalDateTime outTime) {
+    public void setOutTime(String outTime) {
         this.outTime = outTime;
     }
 
     // ornum 的 getter 和 setter 方法
-    public Integer getOrnum() {
+    public String getOrnum() {
         return ornum;
     }
 
-    public void setOrnum(Integer ornum) {
+    public void setOrnum(String ornum) {
         this.ornum = ornum;
     }
 

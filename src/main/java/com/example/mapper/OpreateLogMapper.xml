@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.OpreateLogMapper">
     <!-- 查询所有用户信息 -->
     <select id="listLog" resultType="com.example.entity.OpreateLog">
-        SELECT * FROM opreate_log
+        SELECT * FROM opreate_log order by id DESC
     </select>
 
 

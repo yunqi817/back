@@ -32,7 +32,8 @@ public class OpreateLogController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteLog(@PathVariable int id) {
-        return opreateLogService.deleteLog(id);
+    public boolean deleteLog(@PathVariable("id") String id) {
+        int person = Integer.parseInt(id);
+        return opreateLogService.deleteLog(person);
     }
 }
