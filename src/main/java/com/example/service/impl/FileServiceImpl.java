@@ -111,6 +111,22 @@ public class FileServiceImpl implements FileService {
         return returnMap;
     }
 
+    @Override
+    public boolean deleteFile(String fileName) {
+        String file = fileName.substring(0,fileName.indexOf("."));
+        String bucketName = ossConfig.getBucketName();
+        String endPoint = ossConfig.getEndPoint();
+        String accessKeyId = ossConfig.getAccessKeyId();
+        String accessKeySecret = ossConfig.getAccessKeySecret();
+
+        //创建OSS对象
+        OSS ossClient = new OSSClientBuilder().build(endPoint, accessKeyId, accessKeySecret);
+
+        ossClient.deleteObject("pic-excel","excel/" + file +".xlsx");
+        ossClient.deleteObject("pic-excel","picture/" + fileName);
+        return true;
+    }
+
     /**
      * 阿里云OSS文件上传
      *
@@ -346,7 +362,7 @@ public class FileServiceImpl implements FileService {
                 // 创建 MockMultipartFile 对象
                 MultipartFile multipartFile = new MockMultipartFile(
                         "file",
-                        fileName+".xlsx",
+                        fileName.substring(0,fileName.indexOf("."))+".xlsx",
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         excelBytes
                 );

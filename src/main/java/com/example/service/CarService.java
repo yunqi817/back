@@ -21,7 +21,7 @@ public interface CarService extends IService<Car> {
 
     List<JSONObject> getByCarId(String carId);
 
-    boolean impoerExcel(MultipartFile file);
+    boolean impoerExcel(MultipartFile file,String plandate);
 
     boolean removebyId(Long Id);
 }

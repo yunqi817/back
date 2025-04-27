@@ -195,20 +195,69 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         carInfo.setPlanTime(planTime);
         carInfo.setRemark2((String) car.get("remark2"));
         List<JSONObject> opreateList = (List<JSONObject>) car.get("opreate");
+        String[] parts = ((String) car.get("opreateList")).split(",");
+        List<String> updateOpreateList = new ArrayList<>(Arrays.asList(parts));
+        int len = opreateList.size();
+        int size = updateOpreateList.size();
         List<Opreate> opreates = new ArrayList<>();
+        List<Opreate> opreatesDuoYu = new ArrayList<>();
         carMapper.updateCar(carInfo);
-        for (JSONObject opreate : opreateList) {
-            Opreate opreate1 = new Opreate();
-            Long opSet = opreate.getLong("id");
-            opreate1.setId(opSet);
-            opreate1.setParentId(set);
-            opreate1.setOpId((Integer) opreate.get("opId"));
-            opreate1.setOpration((String) opreate.get("opration"));
-            opreate1.setOpNo((Integer) opreate.get("opNo"));
-            opreate1.setIsOk((Integer) opreate.get("isOk"));
-            opreates.add(opreate1);
-        }
-        opreateService.updateOpreate(opreates);
+       if(len < size){
+           for (int i = 0; i < len; i++) {
+               JSONObject opreate = opreateList.get(i);
+               Opreate opreate1 = new Opreate();
+               Long opSet = opreate.getLong("id");
+               opreate1.setId(opSet);
+               opreate1.setParentId(set);
+               opreate1.setOpId((Integer) opreate.get("opId"));
+               opreate1.setOpration(updateOpreateList.get(i));
+               opreate1.setOpNo((Integer) opreate.get("opNo"));
+               opreate1.setIsOk((Integer) opreate.get("isOk"));
+               opreates.add(opreate1);
+           }
+           opreateService.updateOpreate(opreates);
+           //新增多余的数据
+           for (int i = len; i < updateOpreateList.size(); i++) {
+               Opreate opreate1 = new Opreate();
+               opreate1.setParentId(set);
+               opreate1.setOpration((String) updateOpreateList.get(i));
+               opreate1.setOpNo(i+1);
+               opreate1.setIsOk(0);
+               opreatesDuoYu.add(opreate1);
+           }
+           opreateService.saveOpreate(opreatesDuoYu);
+       } else if (len == size) {
+           for (int i = 0; i < len; i++) {
+               JSONObject opreate = opreateList.get(i);
+               Opreate opreate1 = new Opreate();
+               Long opSet = opreate.getLong("id");
+               opreate1.setId(opSet);
+               opreate1.setParentId(set);
+               opreate1.setOpId((Integer) opreate.get("opId"));
+               opreate1.setOpration(updateOpreateList.get(i));
+               opreate1.setOpNo((Integer) opreate.get("opNo"));
+               opreate1.setIsOk((Integer) opreate.get("isOk"));
+               opreates.add(opreate1);
+           }
+           opreateService.updateOpreate(opreates);
+       }else{
+           for (int i = 0; i < size; i++) {
+               JSONObject opreate = opreateList.get(i);
+               Opreate opreate1 = new Opreate();
+               Long opSet = opreate.getLong("id");
+               opreate1.setId(opSet);
+               opreate1.setParentId(set);
+               opreate1.setOpId((Integer) opreate.get("opId"));
+               opreate1.setOpration(updateOpreateList.get(i));
+               opreate1.setOpNo((Integer) opreate.get("opNo"));
+               opreate1.setIsOk((Integer) opreate.get("isOk"));
+               opreates.add(opreate1);
+           }
+           opreateService.updateOpreate(opreates);
+           for(int i = size; i < len;i++ ){
+               opreateService.removeOpreate(opreateList.get(i).getLong("id"));
+           }
+       }
         return true;
     }
 
@@ -265,7 +314,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     }
 
     @Override
-    public boolean impoerExcel(MultipartFile file) {
+    public boolean impoerExcel(MultipartFile file,String plandate) {
         if (file == null || file.isEmpty()) {
             return false;
         }
@@ -334,6 +383,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
             }
             jsonObject.put("remark2", jsonObject.getStr("midPerson"));
             jsonObject.set("midPerson","");
+            jsonObject.set("planTime",plandate);
             saveCarOpreate(jsonObject);
         }
         return true;

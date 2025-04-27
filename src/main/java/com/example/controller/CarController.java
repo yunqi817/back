@@ -60,7 +60,7 @@ public class CarController {
     }
 
     @PostMapping("/importExcel")
-    public boolean importExcel(@RequestBody MultipartFile file) throws IOException {
+    public boolean importExcel(@RequestBody MultipartFile file,@RequestParam String plandate) throws IOException {
         try {
             InputStream inputStream = file.getInputStream();
             Workbook workbook = new XSSFWorkbook(inputStream);
@@ -96,7 +96,7 @@ public class CarController {
                         bytes
                 );
 
-                return carService.impoerExcel(newFile);
+                return carService.impoerExcel(newFile,plandate);
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;

@@ -18,4 +18,5 @@ public interface FileService {
 
     Map<String ,String> PicExcel() throws ClientException;
 
+    boolean deleteFile(String fileName);
 }

@@ -59,4 +59,9 @@ public class FileController {
         return result;
     }
 
+    @PostMapping("/delete")
+    private  boolean deleteFile(@RequestParam("fileName") String fileName) {
+        return fileService.deleteFile(fileName);
+    }
+
 }

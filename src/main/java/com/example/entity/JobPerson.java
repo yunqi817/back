@@ -20,9 +20,9 @@ public class JobPerson {
     private String carDoperson;
     private String compiler;
 
-//    public Integer getId() {
-//        return id;
-//    }
+    public Integer getId() {
+        return id;
+    }
 
     public void setId(Integer id) {
         this.id = id;
